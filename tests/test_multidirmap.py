@@ -12,30 +12,50 @@ def pte_data():
 
     Extract from the Periodic Table of Elements.
     """
-    return [["symbol", "name", "atomic_number", "isotope_masses"],
-            [["H", "Hydrogen", 1, [1, 2, 3]],
-             ["He", "Helium", 2, [4, 3]],
-             ["Li", "Lithium", 3, [7, 6]],
-             ["Be", "Beryllium", 4, [9, 10, 7]],
-             ["B", "Boron", 5, [11, 10]],
-             ["C", "Carbon", 6, [12, 13, 14, 11]],
-             ["N", "Nitrogen", 7, [14, 15, 13]],
-             ["O", "Oxygen", 8, [16, 18, 17]],
-             ["F", "Fluorine", 9, [19, 18]],
-             ["Ne", "Neon", 10, [20, 22, 21]]]]
+    return [
+        ["symbol", "name", "atomic_number", "isotope_masses"],
+        [
+            ["H", "Hydrogen", 1, [1, 2, 3]],
+            ["He", "Helium", 2, [4, 3]],
+            ["Li", "Lithium", 3, [7, 6]],
+            ["Be", "Beryllium", 4, [9, 10, 7]],
+            ["B", "Boron", 5, [11, 10]],
+            ["C", "Carbon", 6, [12, 13, 14, 11]],
+            ["N", "Nitrogen", 7, [14, 15, 13]],
+            ["O", "Oxygen", 8, [16, 18, 17]],
+            ["F", "Fluorine", 9, [19, 18]],
+            ["Ne", "Neon", 10, [20, 22, 21]],
+        ],
+    ]
 
 
 def test_input_formats(pte_data):
     """Test the various possible input formats."""
-    data1 = {"H": ["Hydrogen", 1, [1, 2, 3]],
-             "He": ["Helium", 2, [4, 3]],
-             "Li": ["Lithium", 3, [7, 6]]}
-    data2 = [{"symbol": "H", "name": "Hydrogen", "atomic_number": 1,
-              "isotope_masses": [1, 2, 3]},
-             {"symbol": "He", "name": "Helium", "atomic_number": 2,
-              "isotope_masses": [4, 3]},
-             {"symbol": "Li", "name": "Lithium", "atomic_number": 3,
-              "isotope_masses": [7, 6]}]
+    data1 = {
+        "H": ["Hydrogen", 1, [1, 2, 3]],
+        "He": ["Helium", 2, [4, 3]],
+        "Li": ["Lithium", 3, [7, 6]],
+    }
+    data2 = [
+        {
+            "symbol": "H",
+            "name": "Hydrogen",
+            "atomic_number": 1,
+            "isotope_masses": [1, 2, 3],
+        },
+        {
+            "symbol": "He",
+            "name": "Helium",
+            "atomic_number": 2,
+            "isotope_masses": [4, 3],
+        },
+        {
+            "symbol": "Li",
+            "name": "Lithium",
+            "atomic_number": 3,
+            "isotope_masses": [7, 6],
+        },
+    ]
     map0 = MultiDirMap(pte_data[0], key_columns=3, data=pte_data[1][:3])
     map1 = MultiDirMap(pte_data[0], key_columns=3, data=data1)
     map2 = MultiDirMap(pte_data[0], key_columns=3, data=data2)
@@ -121,12 +141,12 @@ def test_iter_keys_values_items(pte_data):
     """Test the iter-related methods __iter__(), keys(), values(), items()."""
     map0 = MultiDirMap(pte_data[0], key_columns=3, data=pte_data[1])
     keys = [key for key in map0]
-    assert keys == ['H', 'He', 'Li', 'Be', 'B', 'C', 'N', 'O', 'F', 'Ne']
+    assert keys == ["H", "He", "Li", "Be", "B", "C", "N", "O", "F", "Ne"]
     assert keys == list(map0.keys())
     for i, value in enumerate(map0.values()):
         assert value.aslist() == pte_data[1][i]
     for key, value in map0.items():
-        assert(map0[key] == value)
+        assert map0[key] == value
 
 
 def test_len(pte_data):
@@ -140,24 +160,28 @@ def test_len(pte_data):
 def test_str(pte_data):
     """Test the __str__() method."""
     map0 = MultiDirMap(pte_data[0], key_columns=3, data=pte_data[1][:6])
-    string0 = ("symbol*             name*               atomic_number*      isotope_masses     \n"  # noqa: E501
-               "===============================================================================\n"  # noqa: E501
-               "H                   Hydrogen            1                   [1, 2, 3]          \n"  # noqa: E501
-               "He                  Helium              2                   [4, 3]             \n"  # noqa: E501
-               "Li                  Lithium             3                   [7, 6]             \n"  # noqa: E501
-               "Be                  Beryllium           4                   [9, 10, 7]         \n"  # noqa: E501
-               "B                   Boron               5                   [11, 10]           \n"  # noqa: E501
-               "C                   Carbon              6                   [12, 13, 14, 11]   ")   # noqa: E501
+    string0 = (
+        "symbol*             name*               atomic_number*      isotope_masses     \n"  # noqa: E501
+        "===============================================================================\n"  # noqa: E501
+        "H                   Hydrogen            1                   [1, 2, 3]          \n"  # noqa: E501
+        "He                  Helium              2                   [4, 3]             \n"  # noqa: E501
+        "Li                  Lithium             3                   [7, 6]             \n"  # noqa: E501
+        "Be                  Beryllium           4                   [9, 10, 7]         \n"  # noqa: E501
+        "B                   Boron               5                   [11, 10]           \n"  # noqa: E501
+        "C                   Carbon              6                   [12, 13, 14, 11]   "  # noqa: E501
+    )
     assert str(map0) == string0
     map0.print_settings(max_cols=3, max_col_width=9)
-    string1 = ("symbol*   name*     ... isotope_m\n"
-               "=================================\n"
-               "H         Hydrogen  ... [1, 2, 3]\n"
-               "He        Helium    ... [4, 3]   \n"
-               "Li        Lithium   ... [7, 6]   \n"
-               "Be        Beryllium ... [9, 10, 7\n"
-               "B         Boron     ... [11, 10] \n"
-               "C         Carbon    ... [12, 13, ")
+    string1 = (
+        "symbol*   name*     ... isotope_m\n"
+        "=================================\n"
+        "H         Hydrogen  ... [1, 2, 3]\n"
+        "He        Helium    ... [4, 3]   \n"
+        "Li        Lithium   ... [7, 6]   \n"
+        "Be        Beryllium ... [9, 10, 7\n"
+        "B         Boron     ... [11, 10] \n"
+        "C         Carbon    ... [12, 13, "
+    )
     assert str(map0) == string1
 
 
@@ -178,22 +202,33 @@ def test_update(pte_data):
     with pytest.raises(DuplicateKeyError):
         map3.update(
             [["X", "Helium", 3, []], ["Y", "Y", 9, []], ["H", "H", 9, []]],
-            overwrite="secondary")
+            overwrite="secondary",
+        )
     assert is_consistent(map3)
     assert map2 == map3
-    assert (list(map3.symbol.keys()) ==
-            ["H", "He", "Li", "Be", "B", "C", "N", "O", "F", "Ne"])
+    assert list(map3.symbol.keys()) == [
+        "H",
+        "He",
+        "Li",
+        "Be",
+        "B",
+        "C",
+        "N",
+        "O",
+        "F",
+        "Ne",
+    ]
     map4 = MultiDirMap(pte_data[0], key_columns=3, data=pte_data[1])
-    map4.update([["X", "Helium", 3, []], ["Y", "Y", 9, []]],
-                overwrite="secondary")
+    map4.update([["X", "Helium", 3, []], ["Y", "Y", 9, []]], overwrite="secondary")
     assert is_consistent(map4)
     with pytest.raises(KeyError):
         map4["He"]
     assert map4.name["Helium"].aslist() == ["X", "Helium", 3, []]
     assert list(map4.keys()) == ["H", "Be", "B", "C", "N", "O", "Ne", "X", "Y"]
     map5 = MultiDirMap(pte_data[0], key_columns=3, data=pte_data[1])
-    map5.update([["X", "Helium", 3, []], ["Y", "Y", 9, []], ["H", "H", 9, []]],
-                overwrite="all")
+    map5.update(
+        [["X", "Helium", 3, []], ["Y", "Y", 9, []], ["H", "H", 9, []]], overwrite="all"
+    )
     assert is_consistent(map5)
     assert map5["H"].aslist() == ["H", "H", 9, []]
     assert map5.name["Helium"].aslist() == ["X", "Helium", 3, []]
@@ -201,7 +236,9 @@ def test_update(pte_data):
     map6 = MultiDirMap(pte_data[0], key_columns=3, data=pte_data[1])
     map6.update(
         [["X", "Helium", 3, []], ["Y", "Y", 9, []], ["H", "H", 10, []]],
-        overwrite="secondary", skip_duplicates=True)
+        overwrite="secondary",
+        skip_duplicates=True,
+    )
     assert is_consistent(map6)
     with pytest.raises(KeyError):
         map6["He"]
@@ -210,11 +247,26 @@ def test_update(pte_data):
     with pytest.raises(ValueError):
         map0.update([["U"]])
     with pytest.raises(ValueError):
-        map0.update([{"symbol": "U", "name": "Uranium",
-                      "isotope_masses": [238, 235, 234, 236, 233, 232]}])
+        map0.update(
+            [
+                {
+                    "symbol": "U",
+                    "name": "Uranium",
+                    "isotope_masses": [238, 235, 234, 236, 233, 232],
+                }
+            ]
+        )
     with pytest.raises(ValueError):
-        map0.update([{"symbol": "U", "name": "Uranium", "atomic_number": None,
-                      "isotope_masses": [238, 235, 234, 236, 233, 232]}])
+        map0.update(
+            [
+                {
+                    "symbol": "U",
+                    "name": "Uranium",
+                    "atomic_number": None,
+                    "isotope_masses": [238, 235, 234, 236, 233, 232],
+                }
+            ]
+        )
     with pytest.raises(ValueError):
         map0.update(["Uranium"])
     with pytest.raises(ValueError):
@@ -267,12 +319,11 @@ def is_consistent(mdmap):
     each row is referred to by the appropriate key in each key dicts.
     """
     cols = mdmap._columns
-    for col in cols[1:mdmap._key_columns]:
+    for col in cols[1 : mdmap._key_columns]:
         if len(getattr(mdmap, col)) != len(mdmap):  # pragma: no cover
             return False
     for key, entry in mdmap.items():
-        for col in cols[1:mdmap._key_columns]:
-            if getattr(mdmap,
-                       col)[getattr(entry, col)] != entry:  # pragma: no cover
+        for col in cols[1 : mdmap._key_columns]:
+            if getattr(mdmap, col)[getattr(entry, col)] != entry:  # pragma: no cover
                 return False
     return True

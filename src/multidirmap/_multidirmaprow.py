@@ -9,6 +9,7 @@ generated via generate_row_class().
 
 def generate_row_class(slots):
     """Dynamically create a MultiDirMapRow class with given slots."""
+
     class MultiDirMapRow(object):
         """An entry in a MultiDirMap.
 
@@ -35,8 +36,7 @@ def generate_row_class(slots):
             return {key: getattr(self, key) for key in self.__slots__[1:]}
 
         def __setattr__(self, attr, value):
-            self._parent._modify_row_attr(
-                self, attr, value, getattr(self, attr))
+            self._parent._modify_row_attr(self, attr, value, getattr(self, attr))
             super(MultiDirMapRow, self).__setattr__(attr, value)
 
         def __getitem__(self, key):

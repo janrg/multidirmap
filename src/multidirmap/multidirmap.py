@@ -20,8 +20,7 @@ class MultiDirMap(object):
         self._MultiDirMapRow = generate_row_class(columns)
         self._columns = columns
         self._key_columns = key_columns or len(columns)
-        self._print_settings = {"max_width": 80, "max_cols": 4,
-                                "max_col_width": 20}
+        self._print_settings = {"max_width": 80, "max_cols": 4, "max_col_width": 20}
         # For easier internal access than getattr
         self._key_dicts = {}
         for colname in columns[:key_columns]:
@@ -64,9 +63,11 @@ class MultiDirMap(object):
             return True
         if type(self) != type(other):
             return False
-        return ((self._columns == other._columns) and
-                (self._key_columns == other._key_columns) and
-                (self._primary_key_dict == other._primary_key_dict))
+        return (
+            (self._columns == other._columns)
+            and (self._key_columns == other._key_columns)
+            and (self._primary_key_dict == other._primary_key_dict)
+        )
 
     def __iter__(self):
         """Iterate over entries in the primary key dict."""
@@ -79,36 +80,46 @@ class MultiDirMap(object):
         to the left of the last column and replaced by "...") are determined
         by the print settings.
         """
-        n_output_cols = min(
-            self._print_settings["max_cols"], len(self._columns))
-        n_omitted_cols = max(
-            len(self._columns) - self._print_settings["max_cols"], 0)
+        n_output_cols = min(self._print_settings["max_cols"], len(self._columns))
+        n_omitted_cols = max(len(self._columns) - self._print_settings["max_cols"], 0)
         col_width = min(
             self._print_settings["max_col_width"],
-            (self._print_settings["max_width"] - 3 * n_omitted_cols -
-             (n_output_cols + n_omitted_cols - 1)) // n_output_cols)
-        total_width = (n_output_cols * col_width +
-                       (n_output_cols + n_omitted_cols - 1) +
-                       n_omitted_cols * 3)
+            (
+                self._print_settings["max_width"]
+                - 3 * n_omitted_cols
+                - (n_output_cols + n_omitted_cols - 1)
+            )
+            // n_output_cols,
+        )
+        total_width = (
+            n_output_cols * col_width
+            + (n_output_cols + n_omitted_cols - 1)
+            + n_omitted_cols * 3
+        )
         pad_format = "{:" + str(col_width) + "." + str(col_width) + "}"
-        headers = ([pad_format.format(name[:col_width - 1] + "*")
-                    for name in self._columns[:self._key_columns]] +
-                   [pad_format.format(name[:col_width])
-                    for name in self._columns[self._key_columns:]])
+        headers = [
+            pad_format.format(name[: col_width - 1] + "*")
+            for name in self._columns[: self._key_columns]
+        ] + [
+            pad_format.format(name[:col_width])
+            for name in self._columns[self._key_columns :]
+        ]
         if n_omitted_cols > 0:
-            headers = headers[:n_output_cols - 1] + ["...", headers[-1]]
+            headers = headers[: n_output_cols - 1] + ["...", headers[-1]]
 
         output = [headers, [total_width * "="]]
         for row in self._primary_key_dict.values():
             entries = row.aslist()
             if len(headers) > n_output_cols:
                 output.append(
-                    [pad_format.format(str(value)[:col_width]) for value in
-                     entries[:n_output_cols - 1]] + [
-                        "...", pad_format.format(str(entries[-1])[:col_width])])
+                    [
+                        pad_format.format(str(value)[:col_width])
+                        for value in entries[: n_output_cols - 1]
+                    ]
+                    + ["...", pad_format.format(str(entries[-1])[:col_width])]
+                )
             else:
-                output.append([pad_format.format(str(value)) for value in
-                               entries])
+                output.append([pad_format.format(str(value)) for value in entries])
 
         return "\n".join([" ".join(row) for row in output])
 
@@ -179,11 +190,12 @@ class MultiDirMap(object):
         data = self._format_data(data)
         added_entries = []
         backups = []
-        to_delete = {col: set() for col in self._columns[:self._key_columns]}
+        to_delete = {col: set() for col in self._columns[: self._key_columns]}
         with self._writable():
             for row in data:
-                self._add_entry(row, added_entries, backups, to_delete,
-                                overwrite, skip_duplicates)
+                self._add_entry(
+                    row, added_entries, backups, to_delete, overwrite, skip_duplicates
+                )
             for col, keys in to_delete.items():
                 for key in keys:
                     del self._key_dicts[col][key]
@@ -210,52 +222,58 @@ class MultiDirMap(object):
                 if isinstance(row, list) or isinstance(row, tuple):
                     if not self._key_columns <= len(row) <= len(self._columns):
                         raise ValueError(
-                            "Encountered malformed data updating MultiDirMap:",
-                            row)
-                    shaped_data.append(
-                        row + [None] * (len(self._columns) - len(row)))
+                            "Encountered malformed data updating MultiDirMap:", row
+                        )
+                    shaped_data.append(row + [None] * (len(self._columns) - len(row)))
                 elif isinstance(row, dict):
-                    if not set(self._columns[:self._key_columns]) <= set(row):
+                    if not set(self._columns[: self._key_columns]) <= set(row):
                         raise ValueError(
-                            "Encountered malformed data updating MultiDirMap:",
-                            row)
+                            "Encountered malformed data updating MultiDirMap:", row
+                        )
                     new_row = [row.get(col) for col in self._columns]
-                    if None in new_row[:self._key_columns]:
+                    if None in new_row[: self._key_columns]:
                         raise ValueError(
-                            "Encountered incomplete data updating MultiDirMap:",
-                            row)
+                            "Encountered incomplete data updating MultiDirMap:", row
+                        )
                     shaped_data.append(new_row)
                 else:
                     raise ValueError(
-                        "Encountered unexpected data format updating "
-                        "MultiDirMap:", row)
+                        "Encountered unexpected data format updating " "MultiDirMap:",
+                        row,
+                    )
         elif isinstance(data, dict):
             for primary_key, row in data.items():
                 if isinstance(row, list) or isinstance(row, tuple):
-                    if not (self._key_columns <= len(row) + 1 <=
-                            len(self._columns)):
+                    if not (self._key_columns <= len(row) + 1 <= len(self._columns)):
                         raise ValueError(
-                            "Encountered malformed data updating MultiDirMap:",
-                            row)
+                            "Encountered malformed data updating MultiDirMap:", row
+                        )
                     shaped_data.append(
-                        [primary_key] + row +
-                        [None] * (len(self._columns) - len(row) - 1))
+                        [primary_key]
+                        + row
+                        + [None] * (len(self._columns) - len(row) - 1)
+                    )
                 else:
                     raise ValueError(
                         "Encountered unexpected data format updating",
-                        "MultiDirMap:", row)
+                        "MultiDirMap:",
+                        row,
+                    )
         else:
-            raise ValueError(
-                "Encountered unexpected data format updating MultiDirMap.")
+            raise ValueError("Encountered unexpected data format updating MultiDirMap.")
         return shaped_data
 
-    def _add_entry(self, row, added_entries, backups, to_delete, overwrite,
-                   skip_duplicates):
+    def _add_entry(
+        self, row, added_entries, backups, to_delete, overwrite, skip_duplicates
+    ):
         """Add an entry to the map."""
         entries = dict(zip(self._columns, row))
         new_entry = self._MultiDirMapRow(self, entries)
-        duplicates = {col: key in self._key_dicts[col] for col, key in
-                      entries.items() if col in self._key_dicts}
+        duplicates = {
+            col: key in self._key_dicts[col]
+            for col, key in entries.items()
+            if col in self._key_dicts
+        }
         if not any(duplicates.values()):
             added_entry = {}
             for col, key in entries.items():
@@ -267,19 +285,23 @@ class MultiDirMap(object):
         # For any constellation that would not allow inserting the new entry we
         # either skip the entry or roll back and raise an error depending on
         # whether skip_duplicates is True
-        if (overwrite == "none" or
-            (overwrite == "primary" and any(
-                [key for col, key
-                 in duplicates.items() if col != self._columns[0]])) or
-            (overwrite == "secondary" and
-             duplicates[self._columns[0]])):
+        if (
+            overwrite == "none"
+            or (
+                overwrite == "primary"
+                and any(
+                    [key for col, key in duplicates.items() if col != self._columns[0]]
+                )
+            )
+            or (overwrite == "secondary" and duplicates[self._columns[0]])
+        ):
             if skip_duplicates:
                 return
             else:
                 self._rollback(added_entries, backups)
                 raise DuplicateKeyError(
-                    "One or more keys in {} were duplicates".format(
-                        str(row)))
+                    "One or more keys in {} were duplicates".format(str(row))
+                )
         self._determine_deletable(entries, duplicates, to_delete)
         if overwrite == "all":
             for col, key in entries.items():
@@ -308,7 +330,8 @@ class MultiDirMap(object):
         for col, key in entries.items():
             if col in self._key_dicts and duplicates[col]:
                 for i, val in enumerate(
-                        self._key_dicts[col][key].aslist()[:self._key_columns]):
+                    self._key_dicts[col][key].aslist()[: self._key_columns]
+                ):
                     to_delete[self._columns[i]].add(val)
 
     def _rollback(self, added_entries, backups):
@@ -333,8 +356,9 @@ class MultiDirMap(object):
             return
         if value in self._key_dicts[col]:
             raise DuplicateKeyError(
-                "Attempting to set a key to \"{}\", which already exists in "
-                "column \"{}\"".format(value, col))
+                'Attempting to set a key to "{}", which already exists in '
+                'column "{}"'.format(value, col)
+            )
         with self._writable():
             self._key_dicts[col][value] = row
             del self._key_dicts[col][old_value]

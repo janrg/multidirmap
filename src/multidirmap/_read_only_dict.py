@@ -6,21 +6,25 @@ otherwise OrderedDict.
 
 import sys
 
-if ((sys.version_info[:3] >= (3, 6, 0) and  # pragma: no cover
-     sys.implementation.name == "cpython") or
-        sys.version_info >= (3, 7, 0)):
+if (
+    sys.version_info[:3] >= (3, 6, 0)  # pragma: no cover
+    and sys.implementation.name == "cpython"
+) or sys.version_info >= (3, 7, 0):
     _dicttype = dict
 else:  # pragma: no cover
     from collections import OrderedDict
+
     _dicttype = OrderedDict
 
 
 def if_not_read_only(f):
     """Raise TypeError if decortd function is called while read only is True."""
+
     def wrapper(*args):
         if args[0]._read_only:
             raise TypeError("This dictionary is read only!")
         return f(*args)
+
     return wrapper
 
 
