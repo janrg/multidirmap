@@ -24,19 +24,19 @@ Status
 
 .. image:: https://img.shields.io/pypi/v/multidirmap.svg
    :alt: PyPI Package latest release
-   :target: https://pypi.python.org/pypi/multidirmap
+   :target: https://pypi.org/project/multidirmap/
 
 .. image:: https://img.shields.io/pypi/wheel/multidirmap.svg
    :alt: PyPI Wheel
-   :target: https://pypi.python.org/pypi/multidirmap
+   :target: https://pypi.org/project/multidirmap/
 
 .. image:: https://img.shields.io/pypi/pyversions/multidirmap.svg
    :alt: Supported versions
-   :target: https://pypi.python.org/pypi/multidirmap
+   :target: https://pypi.org/project/multidirmap/
 
 .. image:: https://img.shields.io/pypi/implementation/multidirmap.svg
    :alt: Supported implementations
-   :target: https://pypi.python.org/pypi/multidirmap
+   :target: https://pypi.org/project/multidirmap/
 
 .. image:: https://img.shields.io/pypi/l/multidirmap.svg
    :target: https://raw.githubusercontent.com/janrg/multidirmap/master/LICENSE
@@ -52,7 +52,7 @@ Installation
 Documentation
 -------------
 
-https://multidirmap.readthedocs.io/
+https://multidirmap.readthedocs.io/en/latest/
 
 Quick Start
 -----------
