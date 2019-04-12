@@ -202,6 +202,18 @@ Two MultiDirMaps will compare equal if their column names, number of key
 columns, and entries are identical. Order - while preserved in the primary key
 column regardless of Python version - does not affect equality testing.
 
+Ordering
+--------
+
+Reordering the Secondary Key Columns
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+While the primary key column always maintains insertion order, the order of the
+secondary key columns can be scrambled by insertions that remove existing
+elements by overwriting some of their keys. Consistent ordering between primary
+and secondary key columns can be restored by calling :code:`reorder_secondary_keys()`
+on a map.
+
 Printing
 --------
 

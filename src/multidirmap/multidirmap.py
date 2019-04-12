@@ -211,6 +211,22 @@ class MultiDirMap(object):
             if setting in kwargs and type(kwargs[setting]) is int:
                 self._print_settings[setting] = kwargs[setting]
 
+    def reorder_secondary_keys(self):
+        """Refresh the order of the secondary key dicts.
+
+        This will recreate all secondary key dicts such that the keys
+        will be in the same order as the primary keys, as the secondary
+        key order can get scrambled when secondary entries are
+        overwritten.
+        """
+        with self._writable():
+            for secondary_key_column in self._columns[1 : self._key_columns]:
+                self._key_dicts[secondary_key_column].clear()
+                for entry in self._primary_key_dict.values():
+                    self._key_dicts[secondary_key_column][
+                        entry[secondary_key_column]
+                    ] = entry
+
     def _format_data(self, data):
         """Transform input data into a list of lists.
 

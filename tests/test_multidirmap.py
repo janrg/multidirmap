@@ -312,6 +312,23 @@ def test_clear(pte_data):
     assert map0 == map1
 
 
+def test_reorder_secondary_keys(pte_data):
+    """Test the reorder_secondary_keys() method.
+
+    It should ensure that the order of entries in the secondary key columns
+    corresponds to the order of entries in the primary key column.
+    """
+    map0 = MultiDirMap(pte_data[0], key_columns=3, data=pte_data[1])
+    map1 = MultiDirMap(pte_data[0], key_columns=3, data=pte_data[1])
+    map0.update([["O", "NotOxygen", 999, [9999]]])
+    map0.update([["O", "Oxygen", 8, [16, 18, 17]]])
+    map0.reorder_secondary_keys()
+    assert is_consistent(map0)
+    assert map0 == map1
+    for column in map0._columns[: map0._key_columns]:
+        assert list(getattr(map0, column).keys()) == list(getattr(map1, column).keys())
+
+
 def is_consistent(mdmap):
     """Check whether a MultiDirMap is internally consistent.
 
