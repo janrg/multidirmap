@@ -329,6 +329,19 @@ def test_reorder_secondary_keys(pte_data):
         assert list(getattr(map0, column).keys()) == list(getattr(map1, column).keys())
 
 
+def test_sort(pte_data):
+    """Test the sort() method."""
+    map0 = MultiDirMap(pte_data[0], key_columns=3, data=pte_data[1])
+    map1 = MultiDirMap(pte_data[0], key_columns=3, data=pte_data[1])
+    map2 = MultiDirMap(pte_data[0], key_columns=3, data=pte_data[1])
+    map0.sort()
+    assert map0 == map2
+    assert list(map0.keys()) == sorted(map0.keys())
+    map1.sort(key=lambda entry: entry.atomic_number, reverse=True)
+    assert map1 == map2
+    assert list(map1.atomic_number.keys()) == list(range(10, 0, -1))
+
+
 def is_consistent(mdmap):
     """Check whether a MultiDirMap is internally consistent.
 

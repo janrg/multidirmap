@@ -212,7 +212,30 @@ While the primary key column always maintains insertion order, the order of the
 secondary key columns can be scrambled by insertions that remove existing
 elements by overwriting some of their keys. Consistent ordering between primary
 and secondary key columns can be restored by calling :code:`reorder_secondary_keys()`
-on a map.
+on a map. Note that this can be slow on large maps as it will recreate all
+secondary dictionaries.
+
+Sorting a MultiDirMap
+~~~~~~~~~~~~~~~~~~~~~
+
+An existing map can be sorted with an arbitrary comparison function:
+
+.. code-block:: python
+
+   >>> crew.sort(key=lambda entry: entry.portrayed_by, reverse=True)
+   >>> print(crew)
+   character*          portrayed_by*       role                nicknames
+   ===============================================================================
+   River Tam           Summer Glau         None                Méi-mei
+   ...
+   Hoban Washburne     Alan Tudyk          Pilot               Wash
+
+- "key" is the function that serves as the key for the comparison
+  function. If no key is given, sorting is done by the entries in the
+  primary key column
+- "reverse" (default :code:`False`) reverses the sorting.
+
+Note that sorting can be slow on large maps as it will recreate all key dictionaries.
 
 Printing
 --------

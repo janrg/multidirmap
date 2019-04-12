@@ -227,6 +227,21 @@ class MultiDirMap(object):
                         entry[secondary_key_column]
                     ] = entry
 
+    def sort(self, key=lambda entry: entry.aslist()[0], reverse=False):
+        """Sort the map by the given key.
+
+        If no key is given, sorting is done by the entries in the primary
+        key column.
+        """
+        ordered_values = [
+            value.asdict()
+            for value in sorted(
+                self._primary_key_dict.values(), key=key, reverse=reverse
+            )
+        ]
+        self.clear()
+        self.update(ordered_values)
+
     def _format_data(self, data):
         """Transform input data into a list of lists.
 
