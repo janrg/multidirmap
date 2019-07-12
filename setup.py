@@ -27,7 +27,7 @@ def read(*names, **kwargs):
 
 setup(
     name="multidirmap",
-    version="0.1.0",
+    version="0.2.0",
     license="MIT license",
     description=(
         "A multidirectional map where an arbitrary number of columns"
