@@ -320,16 +320,7 @@ class MultiDirMap(object):
         # For any constellation that would not allow inserting the new entry we
         # either skip the entry or roll back and raise an error depending on
         # whether skip_duplicates is True
-        if (
-            overwrite == "none"
-            or (
-                overwrite == "primary"
-                and any(
-                    [key for col, key in duplicates.items() if col != self._columns[0]]
-                )
-            )
-            or (overwrite == "secondary" and duplicates[self._columns[0]])
-        ):
+        if not self._is_duplicate_overwritable(overwrite, duplicates):
             if skip_duplicates:
                 return
             else:
@@ -359,6 +350,18 @@ class MultiDirMap(object):
                 to_delete[col].discard(key)
         added_entries.append(added_entry)
         backups.append(backup)
+
+    def _is_duplicate_overwritable(self, overwrite, duplicates):
+        """Check whether overwriting an identified duplicate is permitted."""
+        if overwrite == "none":
+            return False
+        if overwrite == "primary" and any(
+            [key for col, key in duplicates.items() if col != self._columns[0]]
+        ):
+            return False
+        if overwrite == "secondary" and duplicates[self._columns[0]]:
+            return False
+        return True
 
     def _determine_deletable(self, entries, duplicates, to_delete):
         """Check which entries can be deleted at end of update() operation."""
