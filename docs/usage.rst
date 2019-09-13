@@ -18,7 +18,7 @@ MultiDirMap takes three arguments:
 
 - "columns" is required and is a list of names for the columns in the map.
   The first column must be a key column and is below referred to as the
-  "primary key column"
+  "primary key column". All columns *must* be strings.
 - "key_columns" gives the number of columns (in the order in which they are
   given in "columns" that should be key columns (and will only accept unique
   and hashable values). It is an optional argument and defaults to len(columns)
