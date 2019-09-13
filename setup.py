@@ -30,7 +30,7 @@ setup(
     version="0.2.0",
     license="MIT license",
     description=(
-        "A multidirectional map where an arbitrary number of columns"
+        "A multidirectional map where an arbitrary number of columns "
         "can be used as keys."
     ),
     long_description="%s\n%s"
@@ -66,10 +66,7 @@ setup(
         "Programming Language :: Python :: Implementation :: PyPy",
         "Topic :: Utilities",
     ],
-    keywords=[
-    ],
-    install_requires=[
-    ],
-    extras_require={
-    },
+    keywords=[],
+    install_requires=[],
+    extras_require={},
 )
