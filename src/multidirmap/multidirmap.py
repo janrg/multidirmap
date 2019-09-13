@@ -69,6 +69,10 @@ class MultiDirMap(object):
             and (self._primary_key_dict == other._primary_key_dict)
         )
 
+    def __ne__(self, other):
+        """Test inequality (required for Python 2)."""
+        return not self == other
+
     def __iter__(self):
         """Iterate over entries in the primary key dict."""
         return iter(self._primary_key_dict)
