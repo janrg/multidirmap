@@ -27,11 +27,11 @@ def generate_row_class(slots):
             for key, value in values.items():
                 super(MultiDirMapRow, self).__setattr__(key, value)
 
-        def aslist(self):
+        def to_list(self):
             """Return contents as list in correct order."""
             return [getattr(self, key) for key in self.__slots__[1:]]
 
-        def asdict(self):
+        def to_dict(self):
             """Return contents as dict."""
             return {key: getattr(self, key) for key in self.__slots__[1:]}
 
@@ -48,6 +48,6 @@ def generate_row_class(slots):
         def __eq__(self, other):
             if self is other:
                 return True
-            return self.aslist() == other.aslist()
+            return self.to_list() == other.to_list()
 
     return MultiDirMapRow

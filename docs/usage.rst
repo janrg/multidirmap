@@ -171,13 +171,13 @@ the key that was used to retrieve this element). So it is entirely possible
    Malcolm Reynolds
 
 All attributes can be accessed with dot notation. Furthermore, a
-:code:`MultiDirMapRow` has the methods :code:`aslist()` and :code:`asdict()`:
+:code:`MultiDirMapRow` has the methods :code:`to_list()` and :code:`to_dict()`:
 
 .. code-block:: python
 
-   >>> crew["Malcolm Reynolds"].aslist()
+   >>> crew["Malcolm Reynolds"].to_list()
    ["Malcolm Reynolds", "Nathan Fillion", "Captain", ["Mal", "Captain Tight Pants"]]
-   >>> crew["Malcolm Reynolds"].asdict()
+   >>> crew["Malcolm Reynolds"].to_dict()
    {"character": "Malcolm Reynolds", "portrayed_by": "Nathan Fillion",
     "role": "Captain", "nicknames": ["Mal", "Captain Tight Pants"]}
 
@@ -192,7 +192,7 @@ Attributes can be modified and changes are propagated to the rest of the map
    ...
    DuplicateKeyError: ...
    >>> mal.nicknames = None
-   >>> crew.portrayed_by["Nathan Fillion"].aslist()
+   >>> crew.portrayed_by["Nathan Fillion"].to_list()
    ["Malcolm Reynolds", "Nathan Fillion", "Captain", None]
 
 Equality Testing

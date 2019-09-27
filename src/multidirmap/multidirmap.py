@@ -49,7 +49,7 @@ class MultiDirMap(object):
             item = self._primary_key_dict.get(key)
             if not item:
                 raise KeyError(key)
-            for col, key in item.asdict().items():
+            for col, key in item.to_dict().items():
                 if col in self._key_dicts:
                     del self._key_dicts[col][key]
 
@@ -113,7 +113,7 @@ class MultiDirMap(object):
 
         output = [headers, [total_width * "="]]
         for row in self._primary_key_dict.values():
-            entries = row.aslist()
+            entries = row.to_list()
             if len(headers) > n_output_cols:
                 output.append(
                     [
@@ -157,7 +157,7 @@ class MultiDirMap(object):
             raise KeyError
         with self._writable():
             item = self._primary_key_dict.popitem()
-            for col, key in item[1].asdict().items():
+            for col, key in item[1].to_dict().items():
                 if col in self._key_dicts and col != self._columns[0]:
                     del self._key_dicts[col][key]
         return item
@@ -231,14 +231,14 @@ class MultiDirMap(object):
                         entry[secondary_key_column]
                     ] = entry
 
-    def sort(self, key=lambda entry: entry.aslist()[0], reverse=False):
+    def sort(self, key=lambda entry: entry.to_list()[0], reverse=False):
         """Sort the map by the given key.
 
         If no key is given, sorting is done by the entries in the primary
         key column.
         """
         ordered_values = [
-            value.asdict()
+            value.to_dict()
             for value in sorted(
                 self._primary_key_dict.values(), key=key, reverse=reverse
             )
@@ -368,7 +368,7 @@ class MultiDirMap(object):
         for col, key in entries.items():
             if col in self._key_dicts and duplicates[col]:
                 for i, val in enumerate(
-                    self._key_dicts[col][key].aslist()[: self._key_columns]
+                    self._key_dicts[col][key].to_list()[: self._key_columns]
                 ):
                     to_delete[self._columns[i]].add(val)
 

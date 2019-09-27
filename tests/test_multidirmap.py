@@ -81,7 +81,7 @@ class TestPop:
         """Pop an element."""
         map0 = get_default_map()
         h = map0.pop("H")
-        assert h.aslist() == ["H", "Hydrogen", 1, [1, 2, 3]]
+        assert h.to_list() == ["H", "Hydrogen", 1, [1, 2, 3]]
         assert map0 == get_default_map(from_index=1)
 
     def test_popitem(self):
@@ -89,7 +89,7 @@ class TestPop:
         map0 = get_default_map()
         ne = map0.popitem()
         assert ne[0] == "Ne"
-        assert ne[1].aslist() == ["Ne", "Neon", 10, [20, 22, 21]]
+        assert ne[1].to_list() == ["Ne", "Neon", 10, [20, 22, 21]]
         assert map0 == get_default_map(to_index=9)
 
     def test_popitem_from_empty(self):
@@ -145,10 +145,10 @@ class TestReadAndWrite:
         """Retrieving an element via subscript."""
         map0 = get_default_map()
         be = ["Be", "Beryllium", 4, [9, 10, 7]]
-        assert map0["Be"].aslist() == be
-        assert map0.symbol["Be"].aslist() == be
-        assert map0.name["Beryllium"].aslist() == be
-        assert map0.atomic_number[4].aslist() == be
+        assert map0["Be"].to_list() == be
+        assert map0.symbol["Be"].to_list() == be
+        assert map0.name["Beryllium"].to_list() == be
+        assert map0.atomic_number[4].to_list() == be
 
     def test_magic_set(self):
         """Setting an element via subscript."""
@@ -177,7 +177,7 @@ class TestReadAndWrite:
     def test_get_found(self):
         """Get method."""
         map0 = get_default_map()
-        assert map0.get("C").aslist() == ["C", "Carbon", 6, [12, 13, 14, 11]]
+        assert map0.get("C").to_list() == ["C", "Carbon", 6, [12, 13, 14, 11]]
 
     def test_get_not_found(self):
         """Get method for element not in map."""
@@ -212,13 +212,13 @@ class TestIter:
         """Iteration over the keys."""
         map0 = get_default_map()
         for i, key in enumerate(map0.keys()):
-            assert map0[key].aslist() == pte_data[1][i]
+            assert map0[key].to_list() == pte_data[1][i]
 
     def test_values(self):
         """Iteration over the values."""
         map0 = get_default_map()
         for i, value in enumerate(map0.values()):
-            assert value.aslist() == pte_data[1][i]
+            assert value.to_list() == pte_data[1][i]
 
     def test_items(self):
         """Iteration over the items."""
@@ -287,7 +287,7 @@ class TestUpdate:
         """An update leaves the key columns consistent."""
         map0 = get_default_map(to_index=3)
         map0.update([["He", "NotHelium", 20]])
-        assert map0["He"].aslist() == ["He", "NotHelium", 20, None]
+        assert map0["He"].to_list() == ["He", "NotHelium", 20, None]
         assert map0["He"] is map0.name["NotHelium"]
         assert map0["He"] is map0.atomic_number[20]
         assert is_consistent(map0)
@@ -322,7 +322,7 @@ class TestUpdate:
         assert is_consistent(map0)
         with pytest.raises(KeyError):
             map0["He"]
-        assert map0.name["Helium"].aslist() == ["X", "Helium", 3, []]
+        assert map0.name["Helium"].to_list() == ["X", "Helium", 3, []]
         assert list(map0.keys()) == ["H", "Be", "B", "C", "N", "O", "Ne", "X", "Y"]
 
     def test_update_with_overwrite_all_overwrites_all_entries_with_key_conflicts(self):
@@ -333,8 +333,8 @@ class TestUpdate:
             overwrite="all",
         )
         assert is_consistent(map0)
-        assert map0["H"].aslist() == ["H", "H", 9, []]
-        assert map0.name["Helium"].aslist() == ["X", "Helium", 3, []]
+        assert map0["H"].to_list() == ["H", "H", 9, []]
+        assert map0.name["Helium"].to_list() == ["X", "Helium", 3, []]
         assert list(map0.keys()) == ["H", "Be", "B", "C", "N", "O", "Ne", "X"]
 
     def test_skip_duplicates_silently_ignores_duplicates_that_are_not_overwritten(self):
@@ -348,8 +348,8 @@ class TestUpdate:
         assert is_consistent(map0)
         with pytest.raises(KeyError):
             map0["He"]
-        assert map0["H"].aslist() == ["H", "Hydrogen", 1, [1, 2, 3]]
-        assert map0.atomic_number[10].aslist() == ["Ne", "Neon", 10, [20, 22, 21]]
+        assert map0["H"].to_list() == ["H", "Hydrogen", 1, [1, 2, 3]]
+        assert map0.atomic_number[10].to_list() == ["Ne", "Neon", 10, [20, 22, 21]]
 
     @pytest.mark.parametrize(
         "update_data",
@@ -440,7 +440,7 @@ class TestModifyRow:
         map0 = get_default_map()
         map0["Li"].atomic_number = 20
         assert 3 not in map0.atomic_number
-        assert map0.atomic_number[20].aslist() == ["Li", "Lithium", 20, [7, 6]]
+        assert map0.atomic_number[20].to_list() == ["Li", "Lithium", 20, [7, 6]]
         assert is_consistent(map0)
 
     def test_raise_duplicate_key_error(self):
