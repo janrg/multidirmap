@@ -1,4 +1,5 @@
 """Test the functionality of a MultiDirMap."""
+import copy
 
 import pytest
 
@@ -501,6 +502,32 @@ class TestSort:
         map0.sort(key=lambda entry: entry.atomic_number, reverse=True)
         assert map0 == get_default_map()
         assert list(map0.atomic_number.keys()) == list(range(10, 0, -1))
+
+
+class TestCopy:
+    """Test copy and deepcopy functions."""
+
+    def test_copy(self):
+        """Test copy.copy(MultiDirMap)."""
+        map0 = get_default_map()
+        map1 = copy.copy(map0)
+        assert not (map0 is map1)
+        assert map0 == map1
+        assert map0["H"].isotope_masses is map1["H"].isotope_masses
+
+    def test_deepcopy(self):
+        """Test copy.deepcopy(MultiDirMap)."""
+        map0 = get_default_map()
+        map1 = copy.deepcopy(map0)
+        assert not (map0 is map1)
+        assert map0 == map1
+        assert not (map0["H"].isotope_masses is map1["H"].isotope_masses)
+        assert map0["H"].isotope_masses == map1["H"].isotope_masses
+
+
+def test_to_list():
+    """Test dumping the data of the MultiDirMap to a list of lists."""
+    assert get_default_map().to_list() == pte_data[1]
 
 
 def is_consistent(mdmap):

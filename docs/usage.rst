@@ -280,3 +280,15 @@ asterisk. Formatting parameters can be set by
    Simon Tam       Sean Maher      ... None
    River Tam       Summer Glau     ... Méi-mei
    Derrial Book    Ron Glass       ... Preacher
+
+
+Copying
+-------
+
+:code:`copy.copy(MultiDirMap)` and :code:`copy.deepcopy(MultiDirMap)` are
+implemented such that a :code:`copy()` is equivalent to creating a new map with the
+same data and :code:`deepcopy()` is equivalent to creating a new map with a deep
+copy of the data.
+
+There is also a :code:`to_list()` method which returns the contents of the map as a
+list of lists.

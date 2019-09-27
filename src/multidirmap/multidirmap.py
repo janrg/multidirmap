@@ -1,4 +1,5 @@
 """A multidirectional mapping with an arbitrary number of key columns."""
+import copy
 from contextlib import contextmanager
 
 from ._multidirmaprow import MultiDirMapRowBase
@@ -131,6 +132,16 @@ class MultiDirMap(object):
 
         return "\n".join([" ".join(row) for row in output])
 
+    def __copy__(self):
+        """Shallow copy, equivalent to creating a new map with the same data."""
+        return MultiDirMap(self._columns, self._key_columns, self.to_list())
+
+    def __deepcopy__(self, memo):
+        """Deep copy, equivalent to creating a new map with a deep copy of the data."""
+        return MultiDirMap(
+            self._columns, self._key_columns, copy.deepcopy(self.to_list())
+        )
+
     def get(self, key, default=None):
         """Redirects to get() of the primary key dict."""
         return self._primary_key_dict.get(key, default)
@@ -249,6 +260,10 @@ class MultiDirMap(object):
         ]
         self.clear()
         self.update(ordered_values)
+
+    def to_list(self):
+        """Dump all the contents of the map into a list of lists."""
+        return [entry.to_list() for entry in self._primary_key_dict.values()]
 
     def _format_data(self, data):
         """Transform input data into a list of lists.
