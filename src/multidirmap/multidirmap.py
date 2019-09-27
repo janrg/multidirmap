@@ -1,7 +1,7 @@
 """A multidirectional mapping with an arbitrary number of key columns."""
 from contextlib import contextmanager
 
-from ._multidirmaprow import generate_row_class
+from ._multidirmaprow import MultiDirMapRowBase
 from ._read_only_dict import ReadOnlyDict
 from ._util import DuplicateKeyError
 
@@ -17,7 +17,11 @@ class MultiDirMap(object):
         columns that the mapping can be indexed by.
         data initializes the mapping with the data provided (see also update()).
         """
-        self._MultiDirMapRow = generate_row_class(columns)
+
+        class MultiDirMapRow(MultiDirMapRowBase):
+            __slots__ = columns
+
+        self._MultiDirMapRow = MultiDirMapRow
         self._columns = columns
         self._key_columns = key_columns or len(columns)
         self._print_settings = {"max_width": 80, "max_cols": 4, "max_col_width": 20}
