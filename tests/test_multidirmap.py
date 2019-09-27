@@ -190,6 +190,35 @@ class TestReadAndWrite:
         map0 = get_default_map()
         assert map0.get("X", "Dummy") == "Dummy"
 
+    def test_set_on_single_value(self):
+        """Setting a single value on a row should update the parent mapping."""
+        map0 = get_default_map()
+        map0["H"].atomic_number = 1000
+        assert is_consistent(map0)
+        assert map0["H"].to_list() == ["H", "Hydrogen", 1000, [1, 2, 3]]
+
+    def test_set_on_single_value_with_subscript(self):
+        """Subscript setting single value on a row should update the parent mapping."""
+        map0 = get_default_map()
+        map0["H"]["atomic_number"] = 1000
+        assert is_consistent(map0)
+        assert map0["H"].to_list() == ["H", "Hydrogen", 1000, [1, 2, 3]]
+
+    def test_set_on_single_non_key_value(self):
+        """Setting a single non key value on a row."""
+        map0 = get_default_map()
+        map0["H"].isotope_masses = [1, 2]
+        assert is_consistent(map0)
+        assert map0["H"].to_list() == ["H", "Hydrogen", 1, [1, 2]]
+
+    def test_set_on_single_value_with_key_conflict(self):
+        """Setting a single value on a row causing a key conflict should raise error."""
+        map0 = get_default_map()
+        with pytest.raises(DuplicateKeyError):
+            map0["H"].atomic_number = 10
+        assert is_consistent(map0)
+        assert map0["H"].atomic_number == 1
+
 
 class TestIter:
     """Test iteration over a MultiDirMap."""
@@ -283,6 +312,14 @@ class TestUpdate:
         with pytest.raises(DuplicateKeyError):
             map0.update(pte_data[1][3:] + pte_data[1][0:1])
         assert map0 == get_default_map(to_index=3)
+
+    def test_overwrite_none_raises_exception_for_any_key_conflicts(self):
+        """If overwrite is none, any duplicate key raises an exception."""
+        map0 = get_default_map()
+        with pytest.raises(DuplicateKeyError):
+            map0.update([["H", "NotHydrogen", 1000, [0]]], overwrite="none")
+        with pytest.raises(DuplicateKeyError):
+            map0.update([["X", "Something", 10, [20]]], overwrite="none")
 
     def test_update_leaves_key_columns_consistent(self):
         """An update leaves the key columns consistent."""

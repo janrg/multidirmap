@@ -64,7 +64,7 @@ class MultiDirMap(object):
 
     def __eq__(self, other):
         """Test equality."""
-        if self is other:
+        if self is other:  # pragma: no cover
             return True
         if type(self) != type(other):
             return False
