@@ -74,11 +74,12 @@ overwrites the existing entry. In a multidirectional mapping, things are a
 little more complicated, so :code:`MultiDirMap.update()` takes two additional
 keyword arguments, :code:`"overwrite"` and :code:`"skip_duplicates"`:
 
-- "overwrite" (default: "primary" can take the values "none", "primary",
-  "secondary", or "all" It indicates which key columns may be overwritten
-  (with "secondary" meaning all key columns other than the primary one). An
-  entry that has a value that is overwritten by an update will be completely
-  removed from the MultiDirMap
+- "overwrite" (enum :code:`Overwrite`) default: :code:`PRIMARY` can take the
+  values :code:`NONE`, :code:`PRIMARY`, :code:`SECONDARY`, or :code:`ALL`. It
+  indicates which key columns may be overwritten (with :code:`SECONDARY`
+  meaning all key columns other than the primary one). An entry that has a
+  value that is overwritten by an update will be completely removed from the
+  MultiDirMap.
 - "skip_duplicates" (default False) describes the behaviour when an entry is
   encountered that may not be overwritten. If False, the update operation is
   aborted and a :code:`DuplicateKeyError` is raised. **An aborted update will
@@ -90,11 +91,11 @@ keyword arguments, :code:`"overwrite"` and :code:`"skip_duplicates"`:
 .. code-block:: python
 
    >>> crew.update([["Yolanda", "Christina Hendricks", "Grifter"]])
-   >>> crew.update([["Bridget", "Christina Hendricks", "Grifter"]], overwrite="none")
+   >>> crew.update([["Bridget", "Christina Hendricks", "Grifter"]], overwrite=Overwrite.NONE)
    Traceback (most recent call last):
    ...
    DuplicateKeyError: One or more keys in ["Bridget", "Christina Hendricks", "Grifter"] were duplicates
-   >>> crew.update([["Bridget", "Christina Hendricks", "Grifter"]], overwrite="primary")
+   >>> crew.update([["Bridget", "Christina Hendricks", "Grifter"]], overwrite=Overwrite.PRIMARY)
    >>> crew["Bridget"].portrayed_by
    Christina Hendricks
    >>> crew["Yolanda"]
@@ -105,8 +106,8 @@ keyword arguments, :code:`"overwrite"` and :code:`"skip_duplicates"`:
 Note that an entry that overwrites another one, can "free up" keys in other
 columns for subsequent updates. This is not currently checked for within an
 update operation, so it is possible that two consecutive updates with
-:code:`overwrite="primary"` or :code:`overwrite="secondary` will succeed where
-a combined operation would raise a DuplicateKeyError.
+:code:`overwrite=Overwrite.PRIMARY` or :code:`overwrite=Overwrite.SECONDARY`
+will succeed where a combined operation would raise a DuplicateKeyError.
 
 Key Column Methods
 ------------------

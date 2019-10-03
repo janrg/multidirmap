@@ -67,6 +67,6 @@ setup(
         "Topic :: Utilities",
     ],
     keywords=[],
-    install_requires=[],
+    install_requires=["enum34 ; python_version<'3.4'"],
     extras_require={},
 )

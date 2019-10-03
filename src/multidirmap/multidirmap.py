@@ -5,6 +5,7 @@ from contextlib import contextmanager
 from ._multidirmaprow import MultiDirMapRowBase
 from ._read_only_dict import ReadOnlyDict
 from ._util import DuplicateKeyError
+from ._util import Overwrite
 
 
 class MultiDirMap(object):
@@ -195,12 +196,12 @@ class MultiDirMap(object):
             for key_dict in self._key_dicts.values():
                 key_dict.clear()
 
-    def update(self, data, overwrite="primary", skip_duplicates=False):
+    def update(self, data, overwrite=Overwrite.PRIMARY, skip_duplicates=False):
         """Update the map with the provided data.
 
-        overwrite can be "none", "primary", "secondary", or "all" and determines
-        whether an entry can still be added when it conflicts with an existing
-        entry.
+        overwrite is an enum (Overwrite) that can be NONE, PRIMARY, SECONDARY,
+        or ALL and determines whether an entry can still be added when it
+        conflicts with an existing entry.
         skip_duplicates determines whether a conflicting entry that will not
         overwrite should be skipped. If False, an exception will be raised in
         that situation and a rollback performed, so that the update() operation
@@ -348,7 +349,7 @@ class MultiDirMap(object):
                     "One or more keys in {} were duplicates".format(str(row))
                 )
         self._determine_deletable(entries, duplicates, to_delete)
-        if overwrite == "all":
+        if overwrite == Overwrite.ALL:
             for col, key in entries.items():
                 if col in self._key_dicts:
                     self._key_dicts[col][key] = new_entry
@@ -372,13 +373,13 @@ class MultiDirMap(object):
 
     def _is_duplicate_overwritable(self, overwrite, duplicates):
         """Check whether overwriting an identified duplicate is permitted."""
-        if overwrite == "none":
+        if overwrite == Overwrite.NONE:
             return False
-        if overwrite == "primary" and any(
+        if overwrite == Overwrite.PRIMARY and any(
             [key for col, key in duplicates.items() if col != self._columns[0]]
         ):
             return False
-        if overwrite == "secondary" and duplicates[self._columns[0]]:
+        if overwrite == Overwrite.SECONDARY and duplicates[self._columns[0]]:
             return False
         return True
 

@@ -5,6 +5,7 @@ import pytest
 
 from multidirmap import DuplicateKeyError
 from multidirmap import MultiDirMap
+from multidirmap import Overwrite
 
 pte_data = [
     ["symbol", "name", "atomic_number", "isotope_masses"],
@@ -314,12 +315,12 @@ class TestUpdate:
         assert map0 == get_default_map(to_index=3)
 
     def test_overwrite_none_raises_exception_for_any_key_conflicts(self):
-        """If overwrite is none, any duplicate key raises an exception."""
+        """If overwrite is NONE, any duplicate key raises an exception."""
         map0 = get_default_map()
         with pytest.raises(DuplicateKeyError):
-            map0.update([["H", "NotHydrogen", 1000, [0]]], overwrite="none")
+            map0.update([["H", "NotHydrogen", 1000, [0]]], overwrite=Overwrite.NONE)
         with pytest.raises(DuplicateKeyError):
-            map0.update([["X", "Something", 10, [20]]], overwrite="none")
+            map0.update([["X", "Something", 10, [20]]], overwrite=Overwrite.NONE)
 
     def test_update_leaves_key_columns_consistent(self):
         """An update leaves the key columns consistent."""
@@ -336,7 +337,7 @@ class TestUpdate:
         with pytest.raises(DuplicateKeyError):
             map0.update(
                 [["X", "Helium", 3, []], ["Y", "Y", 9, []], ["H", "H", 9, []]],
-                overwrite="secondary",
+                overwrite=Overwrite.SECONDARY,
             )
         assert is_consistent(map0)
         assert map0 == get_default_map()
@@ -356,7 +357,9 @@ class TestUpdate:
     def test_overwriting_secondary_key_removes_obsolete_primary_key(self):
         """If secondary keys are overwritten, obsolete primary keys are removed."""
         map0 = get_default_map()
-        map0.update([["X", "Helium", 3, []], ["Y", "Y", 9, []]], overwrite="secondary")
+        map0.update(
+            [["X", "Helium", 3, []], ["Y", "Y", 9, []]], overwrite=Overwrite.SECONDARY
+        )
         assert is_consistent(map0)
         with pytest.raises(KeyError):
             map0["He"]
@@ -364,11 +367,11 @@ class TestUpdate:
         assert list(map0.keys()) == ["H", "Be", "B", "C", "N", "O", "Ne", "X", "Y"]
 
     def test_update_with_overwrite_all_overwrites_all_entries_with_key_conflicts(self):
-        """Setting overwrite to "all" overwrites all entries with key conflicts."""
+        """Setting overwrite to ALL overwrites all entries with key conflicts."""
         map0 = get_default_map()
         map0.update(
             [["X", "Helium", 3, []], ["Y", "Y", 9, []], ["H", "H", 9, []]],
-            overwrite="all",
+            overwrite=Overwrite.ALL,
         )
         assert is_consistent(map0)
         assert map0["H"].to_list() == ["H", "H", 9, []]
@@ -380,7 +383,7 @@ class TestUpdate:
         map0 = get_default_map()
         map0.update(
             [["X", "Helium", 3, []], ["Y", "Y", 9, []], ["H", "H", 10, []]],
-            overwrite="secondary",
+            overwrite=Overwrite.SECONDARY,
             skip_duplicates=True,
         )
         assert is_consistent(map0)
