@@ -41,7 +41,7 @@ To set up `multidirmap` for local development:
    (look for the "Fork" button).
 2. Clone your fork locally::
 
-    git clone git@github.com:your_name_here/multidirmap.git
+    git clone git@github.com:janrg/multidirmap.git
 
 3. Create a branch for local development::
 
