@@ -26,7 +26,7 @@ project = "MultiDirMap"
 year = "2018"
 author = "Jan Greis"
 copyright = "{0}, {1}".format(year, author)
-version = release = "0.2.0"
+version = release = "0.3.0"
 
 pygments_style = "trac"
 templates_path = ["."]
